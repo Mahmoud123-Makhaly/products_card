@@ -4,9 +4,43 @@ import { formInputsList, productList } from "./data";
 import ButtonMaker from "./components/UI/ButtonMaker";
 import ModalMaker from "./components/UI/ModalMaker";
 import InputMaker from "./components/UI/InputMaker";
+import type { IProduct } from "./interfaces";
 
 function App() {
   const [isOpen, setIsOpen] = useState(false);
+  const [product, setProduct] = useState<IProduct>({
+    title: "",
+    description: "",
+    imageURL: "",
+    price: "",
+    colors: [],
+    category: {
+      name: "",
+      imageURL: "",
+    },
+  });
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setProduct({
+      ...product,
+      [name]: value,
+    });
+  };
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsOpen(false);
+    setProduct({
+      title: "",
+      description: "",
+      imageURL: "",
+      price: "",
+      colors: [],
+      category: {
+        name: "",
+        imageURL: "",
+      },
+    });
+  };
   return (
     <main>
       <div className="container mt-4 ">
@@ -33,29 +67,37 @@ function App() {
         toggle={() => setIsOpen(!isOpen)}
         title="Add Product"
       >
-        {formInputsList.map((input) => (
-          <div className="mb-3" key={input.id}>
-            <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-              {input.label}
-            </label>
-            <InputMaker id={input.id} type={input.type} name={input.name} />
+        <form onSubmit={handleSubmit}>
+          {formInputsList.map((input) => (
+            <div className="mb-3" key={input.id}>
+              <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                {input.label}
+              </label>
+              <InputMaker
+                id={input.id}
+                type={input.type}
+                name={input.name}
+                value={product[input.name]}
+                onChange={handleChange}
+              />
+            </div>
+          ))}
+          <div className="flex items-center  gap-2">
+            <ButtonMaker
+              className="  bg-indigo-500 hover:bg-indigo-600"
+              width="w-full"
+            >
+              Submit
+            </ButtonMaker>
+            <ButtonMaker
+              className=" bg-gray-400 hover:bg-gray-500"
+              onClick={() => setIsOpen(false)}
+              width="w-full"
+            >
+              Cancel
+            </ButtonMaker>
           </div>
-        ))}
-        <div className="flex items-center  gap-2">
-          <ButtonMaker
-            className="  bg-indigo-500 hover:bg-indigo-600"
-            width="w-full"
-          >
-            Submit
-          </ButtonMaker>
-          <ButtonMaker
-            className=" bg-gray-400 hover:bg-gray-500"
-            onClick={() => setIsOpen(false)}
-            width="w-full"
-          >
-            Cancel
-          </ButtonMaker>
-        </div>
+        </form>
       </ModalMaker>
     </main>
   );
