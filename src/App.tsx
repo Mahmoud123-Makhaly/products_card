@@ -1,8 +1,9 @@
 import { useState } from "react";
 import ProductCard from "./components/ProductCard";
-import { productList } from "./data";
+import { formInputsList, productList } from "./data";
 import ButtonMaker from "./components/UI/ButtonMaker";
 import ModalMaker from "./components/UI/ModalMaker";
+import InputMaker from "./components/UI/InputMaker";
 
 function App() {
   const [isOpen, setIsOpen] = useState(false);
@@ -32,7 +33,14 @@ function App() {
         toggle={() => setIsOpen(!isOpen)}
         title="Add Product"
       >
-        <h3>efefeff</h3>
+        {formInputsList.map((input) => (
+          <div className="mb-3" key={input.id}>
+            <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+              {input.label}
+            </label>
+            <InputMaker id={input.id} type={input.type} name={input.name} />
+          </div>
+        ))}
         <div className="flex items-center  gap-2">
           <ButtonMaker
             className="  bg-indigo-500 hover:bg-indigo-600"
@@ -41,7 +49,7 @@ function App() {
             Submit
           </ButtonMaker>
           <ButtonMaker
-            className=" bg-gray-400 hover:bg-gray-400"
+            className=" bg-gray-400 hover:bg-gray-500"
             onClick={() => setIsOpen(false)}
             width="w-full"
           >
