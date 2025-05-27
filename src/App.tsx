@@ -11,6 +11,7 @@ import CircleColor from "./components/CircleColor";
 import { v4 as uuid } from "uuid";
 import DropdownMaker from "./components/UI/DropdownMaker";
 import type { ProductNameType } from "./types";
+import toast, { Toaster } from "react-hot-toast";
 
 function App() {
   const defaultProductObject = {
@@ -39,6 +40,9 @@ function App() {
   const [productToEdit, setProductToEdit] =
     useState<IProduct>(defaultProductObject);
   const [productIndex, setProductIndex] = useState(0);
+  const [productToDelete, setProductToDelete] =
+    useState<IProduct>(defaultProductObject);
+  const [isDelete, setIsDelete] = useState(false);
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setProduct({
@@ -56,6 +60,7 @@ function App() {
     setErrors({ ...errors, [name]: "" });
   };
   const toggleEditModal = () => setIsEdit(!isEdit);
+  const toggleDeleteModal = () => setIsDelete(!isDelete);
   /*******  9e3a24c5-c606-4b6f-bf75-f7c4357b0860  *******/
   const handleCancel = () => {
     setIsOpen(false);
@@ -97,6 +102,13 @@ function App() {
       setProducts((prev) => [newProduct, ...prev]);
 
       setIsOpen(false);
+      toast("Product added successfully", {
+        icon: "👏",
+        style: {
+          background: "#000000",
+          color: "#fff",
+        },
+      });
       setProduct(defaultProductObject);
       setTempColors([]);
     }
@@ -124,6 +136,20 @@ function App() {
 
     setErrors(productValidation(productToEdit));
   };
+  const handleDeleteProduct = () => {
+    const updatedProducts = [
+      ...products.filter((item) => item.id !== productToDelete.id),
+    ];
+    setProducts(updatedProducts);
+    toggleDeleteModal();
+    toast("Product deleted successfully", {
+      icon: "👏",
+      style: {
+        background: "#000000",
+        color: "#fff",
+      },
+    });
+  };
   // generate edit modal fields
   const generateEditModalFields = (label: string, name: ProductNameType) => {
     return (
@@ -147,6 +173,7 @@ function App() {
       </div>
     );
   };
+
   return (
     <main>
       <div className="container mt-4 ">
@@ -171,6 +198,8 @@ function App() {
               toggleEditModal={toggleEditModal}
               setProductIndex={setProductIndex}
               productIndex={index}
+              setProductToDelete={setProductToDelete}
+              toggleDeleteModal={toggleDeleteModal}
             />
           ))}
         </div>
@@ -322,6 +351,36 @@ function App() {
           </div>
         </form>
       </ModalMaker>
+      {/* delete product modal */}
+      <ModalMaker isOpen={isDelete} toggle={() => setIsDelete(!isDelete)}>
+        {/* edit modal inputs */}
+        <h3 className="mb-2 text-[20px] font-semibold">
+          Are you sure you want to delete this product from your store ?
+        </h3>
+        <p className="mb-2 text-gray-500">
+          {" "}
+          Once deleted, this product will be permanently removed from your
+          catalog and will no longer be visible to customers. This action cannot
+          be undone.
+        </p>
+        <div className="flex items-center  gap-2">
+          <ButtonMaker
+            onClick={handleDeleteProduct}
+            className="  bg-red-500 hover:bg-red-600"
+            width="w-full"
+          >
+            Delete
+          </ButtonMaker>
+          <ButtonMaker
+            onClick={toggleDeleteModal}
+            className=" bg-gray-400 hover:bg-gray-500"
+            width="w-full"
+          >
+            Cancel
+          </ButtonMaker>
+        </div>
+      </ModalMaker>
+      <Toaster />
     </main>
   );
 }

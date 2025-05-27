@@ -10,6 +10,8 @@ interface IProductCardProps {
   toggleEditModal: () => void;
   setProductIndex: (val: number) => void;
   productIndex: number;
+  setProductToDelete: (product: IProduct) => void;
+  toggleDeleteModal: () => void;
 }
 const ProductCard = (props: IProductCardProps) => {
   const {
@@ -18,11 +20,17 @@ const ProductCard = (props: IProductCardProps) => {
     toggleEditModal,
     setProductIndex,
     productIndex,
+    setProductToDelete,
+    toggleDeleteModal,
   } = props;
   const handleEditProduct = () => {
     setProductToEdit(product);
     setProductIndex(productIndex);
     toggleEditModal();
+  };
+  const handleDeleteProduct = () => {
+    setProductToDelete(product);
+    toggleDeleteModal();
   };
   return (
     <div className="border rounded-lg p-2 flex flex-col gap-4 max-w-sm md:max-w-md mx-auto">
@@ -36,9 +44,11 @@ const ProductCard = (props: IProductCardProps) => {
       <h4 className="text-2xl font-medium text-[20px]">{product.title}</h4>
       <p> {TextSlicer(product.description)}</p>
       <div className="flex items-center space-x-2">
-        {product.colors.map((color) => (
-          <CircleColor key={color} color={color} />
-        ))}
+        {product.colors.length
+          ? product.colors.map((color) => (
+              <CircleColor key={color} color={color} />
+            ))
+          : "No Available Colors"}
       </div>
       <div className="flex items-center justify-between">
         <h3 className="font-semibold text-indigo-500">
@@ -62,7 +72,11 @@ const ProductCard = (props: IProductCardProps) => {
           {" "}
           EDIT
         </ButtonMaker>
-        <ButtonMaker className="  bg-red-500" width="w-full">
+        <ButtonMaker
+          className="  bg-red-500"
+          width="w-full"
+          onClick={handleDeleteProduct}
+        >
           {" "}
           DELETE
         </ButtonMaker>
