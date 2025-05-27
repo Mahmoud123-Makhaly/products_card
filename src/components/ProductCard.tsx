@@ -1,5 +1,5 @@
 import type { IProduct } from "../interfaces";
-import { TextSlicer } from "../utils/Functions";
+import { formatCurrency, TextSlicer } from "../utils/Functions";
 import CircleColor from "./CircleColor";
 import ButtonMaker from "./UI/ButtonMaker";
 import ImageMaker from "./UI/ImageMaker";
@@ -41,7 +41,9 @@ const ProductCard = (props: IProductCardProps) => {
         ))}
       </div>
       <div className="flex items-center justify-between">
-        <h3 className="font-semibold text-indigo-500">${product.price}</h3>
+        <h3 className="font-semibold text-indigo-500">
+          ${formatCurrency(product.price)}
+        </h3>
         <div className="flex items-center space-x-2">
           <ImageMaker
             imageSrc={product.category.imageURL}

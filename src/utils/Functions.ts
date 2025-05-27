@@ -4,3 +4,8 @@ export const TextSlicer = (text: string, max: number = 50) => {
   }
   return text;
 };
+export function formatCurrency(value: number | string): string {
+  const num = typeof value === "string" ? parseFloat(value) : value;
+  if (isNaN(num)) return "0";
+  return num.toLocaleString("en-US");
+}
